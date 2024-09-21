@@ -1,33 +1,54 @@
-import React,{useState,useEffect} from 'react'
-import Link from 'next/link'
-import { getCategories } from '../services'
-
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Header = () => {
-  const [categories, setCategories] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
-    useEffect(() => {
-        getCategories().then((newCategories)=>setCategories(newCategories))
-    }, []);
-    return (
-        <div className='container mx-auto px-10 mb-8'>
-          <div className='border-b w-full inline-block border-blue-400 py-8'>
-            <div className='md:float-left block'>
-              <Link href='/'>
-               <span className='cursor-pointer font-bold text-4xl text-white'>
+  useEffect(() => {
+    // Check if token exists in localStorage (or you can check authentication state from your global state/store)
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true); // User is logged in
+    }
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token'); // Clear the token
+    setIsAuthenticated(false); // Update state
+    router.push('/auth'); // Redirect to auth page
+  };
+
+  return (
+    <div className="container mx-auto px-10 mb-8">
+      <div className="border-b w-full inline-block border-blue-400 py-8">
+        <div className="flex justify-between items-center">
+          <Link href="/">
+            <span className="cursor-pointer font-bold text-4xl text-white">
               Absolute gaze
-               </span>
-              </Link> 
-            </div>
-            <div className="hidden md:float-left md:contents">
-          {categories.map((category, index) => (
-            <Link key={index} href={`/category/${category.slug}`}><span className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer">{category.name}</span></Link>
-          ))}
-        </div>
-          
-        </div>    
-        </div>
-    )
-}
+            </span>
+          </Link>
 
-export default Header
+          {/* Conditionally render based on authentication state */}
+          {isAuthenticated ? (
+            <button
+              onClick={handleSignOut}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 text-lg rounded"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <Link href="/auth">
+              <a className="bg-silver-500 hover:bg-silver-700 text-white font-bold py-3 px-6 text-lg rounded">
+                Sign In
+              </a>
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Header;

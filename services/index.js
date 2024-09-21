@@ -73,21 +73,28 @@ export const getPostDetails = async(slug)=>{
 
 }
 
-export const getRecentPosts = async()=>{
+export const getRecentPosts = async () => {
   const query = gql`
-   query getPostDetails(){
-     posts(orderBy:createdAt_ASC
-           last:3)
-           {title
-            featuredImage{
-              url
-            }
-          createdAt
-          slug}
-   }`
-   const result= await request(graphqlAPI,query)
-   return result.posts
-}
+    query GetRecentPosts {
+      posts(orderBy: createdAt_DESC, first: 5) {
+        title
+        slug
+        createdAt
+        featuredImage {
+          url
+        }
+      }
+    }
+  `;
+
+  try {
+    const result = await request(graphqlAPI, query);
+    return result.posts;
+  } catch (error) {
+    console.error('Error fetching recent posts:', error);
+    throw new Error('Failed to fetch recent posts');
+  }
+};
 
 export const getSimilarPosts = async(categories,slug)=>{
   const query = gql`
@@ -110,7 +117,7 @@ export const getSimilarPosts = async(categories,slug)=>{
 
 export const getCategoryPost = async (slug) => {
   const query = gql`
-    query GetCategoryPost($slug: String!) {
+    query getCategoryPost($slug: String!) {
       postsConnection(where: {categories_some: {slug: $slug}}) {
         edges {
           cursor
@@ -139,10 +146,16 @@ export const getCategoryPost = async (slug) => {
       }
     }
   `;
-  const result = await request(graphqlAPI, query, { slug });
+  console.log('Generated query:', query);
+  try {
+    const result = await request(graphqlAPI, query, { slug });
+    return result.postsConnection.edges;
+  } catch (error) {
+    console.error('Error fetching category posts:', error);
+    throw new Error('Failed to fetch category posts');
+  }
+};
 
-  return result.postsConnection.edges;
-}
 
 export const getCategories = async()=>{
   const query = gql`
@@ -157,7 +170,7 @@ export const getCategories = async()=>{
 
 export const getFeaturedPosts = async () => {
   const query = gql`
-    query GetCategoryPost() {
+    query GetFeaturedPosts {
       posts(where: {featuredPost: true}) {
         author {
           name
@@ -176,7 +189,6 @@ export const getFeaturedPosts = async () => {
   `;
 
   const result = await request(graphqlAPI, query);
-
   return result.posts;
 };
 
