@@ -21,9 +21,12 @@ body {
     left: 0;
     top: 0;
     z-index: -1;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-size: cover; /* Cover the entire area */
+    background-repeat: repeat; /* Repeat the image */
+    background-position: center; /* Center the image */
+    /* Additional options to fine-tune */
+    opacity: 0.9; /* Adjust opacity if needed */
+    filter: blur(0.1px); /* Optional: blur for a softer effect */
   }
 }
 

@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
     "axios": "^1.7.7",
     "d3": "^7.9.0",
     "graphql": "^16.0.1",
