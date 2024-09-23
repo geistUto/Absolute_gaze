@@ -7,12 +7,14 @@ const Header = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if token exists in localStorage (or you can check authentication state from your global state/store)
+    // Check if token exists in localStorage
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true); // User is logged in
+    } else {
+      setIsAuthenticated(false); // User is logged out
     }
-  }, []);
+  }, [router.pathname]); // Listen for route changes to update the state
 
   const handleSignOut = () => {
     localStorage.removeItem('token'); // Clear the token
@@ -26,18 +28,29 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <Link href="/">
             <span className="cursor-pointer font-bold text-4xl text-white">
-              Absolute gaze
+              Absolute Gaze
             </span>
           </Link>
 
           {/* Conditionally render based on authentication state */}
           {isAuthenticated ? (
-            <button
-              onClick={handleSignOut}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 text-lg rounded"
-            >
-              Sign Out
-            </button>
+            <div className="flex items-center space-x-6">
+              {/* Navigation Menu when logged in */}
+              <Link href="/snippets">
+                <a className="text-lg text-white font-semibold">Snippets</a>
+              </Link>
+              <Link href="/knowledge-graph">
+                <a className="text-lg text-white font-semibold">Knowledge Graph</a>
+              </Link>
+
+              {/* Sign Out Button */}
+              <button
+                onClick={handleSignOut}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 text-lg rounded"
+              >
+                Sign Out
+              </button>
+            </div>
           ) : (
             <Link href="/auth">
               <a className="bg-silver-500 hover:bg-silver-700 text-white font-bold py-3 px-6 text-lg rounded">

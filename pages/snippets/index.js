@@ -22,7 +22,6 @@ export default function Snippets() {
         },
       });
       setSnippets(response.data.data);
-      console.log(snippets+"----snippets")
     } catch (error) {
       console.error('Error fetching snippets:', error);
     }
