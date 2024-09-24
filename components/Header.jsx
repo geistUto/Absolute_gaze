@@ -82,7 +82,7 @@ const Header = () => {
               </>
             ) : (
               <Link href="/auth">
-                <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded">
+                <a className="bg-purple-800 hover:bg-blue-900 text-white font-bold py-3 px-6 text-lg rounded">
                   Sign In
                 </a>
               </Link>
@@ -119,7 +119,7 @@ const Header = () => {
           ) : (
             <Link href="/auth">
               <a
-                className="block w-full text-left bg-blue-500 hover:bg-blue-700 py-3 px-6 text-lg rounded"
+                className="block w-full text-left bg-purple-800 hover:bg-blue-900 py-3 px-6 text-lg rounded"
                 onClick={() => setMenuOpen(false)}
               >
                 Sign In
