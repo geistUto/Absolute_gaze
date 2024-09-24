@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import styles from '../../styles/Snippets.module.css';
-import { PiGraphBold } from "react-icons/pi";
 import { MdOutlineAutoGraph } from "react-icons/md"; 
 
 export default function RealmSnippets() {
@@ -51,31 +50,6 @@ export default function RealmSnippets() {
             <h3>{snippet.title}</h3>
             <p>{snippet.content}</p>
   
-            <div className={styles.realmInfo}>
-              <div className={styles.realmConnection}>
-                {snippet?.realm?.parentRealm && (
-                  <>
-                    <Link href={`/realms/${snippet?.realm?.parentRealm?.uuid}`}>
-                      <a className={styles.realmLink}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent' }}>
-                          <PiGraphBold style={{ color: '#FDDE55', marginRight: '0.25rem', fontSize: '1.2rem' }} />
-                          {snippet?.realm?.parentRealm?.name}
-                        </div>
-                      </a>
-                    </Link>
-                    <span className={styles.arrow}>→</span>
-                  </>
-                )}
-                <Link href={`/realms/${snippet.realm?.uuid}`}>
-                  <a className={styles.realmLink}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent' }}>
-                      <PiGraphBold style={{ color: '#FDDE55', marginRight: '0.25rem', fontSize: '1.2rem' }} />
-                      {snippet.realm?.name}
-                    </div>
-                  </a>
-                </Link>
-              </div>
-            </div>
   
             <div className={styles.tags}>
               {snippet.realmsIntegrated && snippet.realmsIntegrated.length > 0 ? (
