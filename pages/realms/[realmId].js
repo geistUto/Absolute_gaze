@@ -2,7 +2,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import styles from '../../styles/Snippets.module.css'; 
+import styles from '../../styles/Snippets.module.css';
+import { PiGraphBold } from "react-icons/pi";
+import { MdOutlineAutoGraph } from "react-icons/md"; 
 
 export default function RealmSnippets() {
   const router = useRouter();
@@ -43,28 +45,56 @@ export default function RealmSnippets() {
     
       <>
       <h4 className={styles.header}> {snippets.length > 0 ? snippets[0].realm.name + " Snippets" : " No Snippets here"}</h4>
-    <div className={styles.snippetList}>
+      <div className={styles.snippetList}>
         {snippets.map((snippet) => (
           <div key={snippet.uuid} className={styles.snippetItem}>
             <h3>{snippet.title}</h3>
             <p>{snippet.content}</p>
-
-
-
-            {/* Associated Tags */}
+  
+            <div className={styles.realmInfo}>
+              <div className={styles.realmConnection}>
+                {snippet?.realm?.parentRealm && (
+                  <>
+                    <Link href={`/realms/${snippet?.realm?.parentRealm?.uuid}`}>
+                      <a className={styles.realmLink}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent' }}>
+                          <PiGraphBold style={{ color: '#FDDE55', marginRight: '0.25rem', fontSize: '1.2rem' }} />
+                          {snippet?.realm?.parentRealm?.name}
+                        </div>
+                      </a>
+                    </Link>
+                    <span className={styles.arrow}>→</span>
+                  </>
+                )}
+                <Link href={`/realms/${snippet.realm?.uuid}`}>
+                  <a className={styles.realmLink}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent' }}>
+                      <PiGraphBold style={{ color: '#FDDE55', marginRight: '0.25rem', fontSize: '1.2rem' }} />
+                      {snippet.realm?.name}
+                    </div>
+                  </a>
+                </Link>
+              </div>
+            </div>
+  
             <div className={styles.tags}>
-              <strong>Tags:</strong>
               {snippet.realmsIntegrated && snippet.realmsIntegrated.length > 0 ? (
                 snippet.realmsIntegrated.map((realm) => (
-                  <>
-                    <Link key={realm.uuid} href={`/realms/${realm.uuid}`}>
-                      <a className={styles.tag}>{realm.name}</a>
-                    </Link>
-                  </>
+                  <Link key={realm.uuid} href={`/realms/${realm?.uuid}`}>
+                    <a className={styles.tag}>
+                      <MdOutlineAutoGraph style={{ color: '#FDDE55', marginRight: '0.25rem' }} />
+                      {realm?.name}
+                    </a>
+                  </Link>
                 ))
               ) : (
-                <span>No tags available</span>
+                <span>No concepts available</span>
               )}
+            </div>
+  
+            {/* Display createdAt date */}
+            <div className={styles.createdAt}>
+              Created At: {new Date(snippet.createdAt).toLocaleString()} {/* Includes time */}
             </div>
           </div>
         ))}

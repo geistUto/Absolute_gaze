@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
     <Head>
-        <title>Absolute gaze</title>
+        <title>DialecTonic</title>
         <link rel="icon" href="/eye-full.svg" />
       </Head>
   <Layout>

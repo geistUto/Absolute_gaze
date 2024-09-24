@@ -1,12 +1,13 @@
 .snippetContainer {
   display: flex;
   flex-direction: column;
-  background-color: #181818;
-  padding: 0.5rem;
+  background-color: transparent;
+  padding: 1rem; /* Increased padding for better spacing */
   color: #f1f1f1;
   width: 80%;
   margin: auto;
 }
+
 @media (max-width: 768px) {
   .snippetContainer {
     width: 95%;
@@ -18,7 +19,7 @@
   text-align: center;
   color: floralwhite;
   font-weight: bold;
-  font-size: x-large;
+  font-size: 2rem; /* Increased size for better emphasis */
 }
 
 .textarea {
@@ -40,42 +41,18 @@
 
 .snippetList {
   margin-top: 2rem;
-}
-
-.snippetList h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.snippetList ul {
-  list-style: none;
-  padding: 0;
-}
-
-.snippetList li {
-  background-color: #252525;
-  padding: 0.5rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  transition: background-color 0.3s;
-}
-
-.snippetList li:hover {
-  background-color: #404040;
-}
-.snippetList {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 0.5rem;
-  background-color: #1e1e1e;
+  background-color: transparent;
   color: #f0f0f0;
   border-radius: 8px;
 }
 
 .snippetItem {
   padding: 1rem;
-  background-color: #282828;
+  background-color: rgba(40, 40, 40, 0.7); 
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s;
@@ -97,7 +74,7 @@
 }
 
 .realmLink {
-  color: #ffcc00;
+  color: #FDAF7B; /* Cool blue */
   text-decoration: none;
   font-weight: bold;
   font-size: 1rem;
@@ -109,7 +86,7 @@
 
 .arrow {
   margin: 0 0.5rem;
-  color: #ffcc00;
+  color: #4da6ff; /* Matches link color */
   font-size: 1.2rem;
 }
 
@@ -122,18 +99,25 @@
 }
 
 .tag {
-  background-color: #ff5050;
+  background-color: #401F71; /* Rich purple */
   color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 4px;
+  border-radius: 6px; /* Slightly more rounded */
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .tag:hover {
-  background-color: #ff3333;
+  background-color: #8a2be2; /* Brightened purple on hover */
   text-decoration: underline;
 }
 
-
+/* Created At */
+.createdAt {
+  display: block;
+  font-size: 0.9rem;
+  color: #ccc; /* Light gray for less emphasis */
+  margin-top: 0.5rem;
+}

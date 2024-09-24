@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import axios from 'axios';
-import { useRouter } from 'next/router'; // For navigation in Next.js
+import { useRouter } from 'next/router'; 
 
 const KnowledgeGraph = () => {
   const [realmData, setRealmData] = useState([]);
-  const router = useRouter(); // Initialize the router for redirection
+  const router = useRouter();
 
   useEffect(() => {
     const fetchKnowledgeGraph = async () => {
@@ -56,7 +56,7 @@ const KnowledgeGraph = () => {
     const nodes = realmData.map(d => ({
       id: d.realmName.trim(),
       snippetCount: d.snippetCount,
-      realmId: d.realmId, // Store realmId for redirection
+      realmId: d.realmId, 
     }));
   
     const parentNodes = [...new Set(realmData.map(d => d.parentRealmName.trim()))]

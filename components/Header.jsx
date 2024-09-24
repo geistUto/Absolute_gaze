@@ -33,9 +33,19 @@ const Header = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
-            <span className="cursor-pointer font-bold text-2xl md:text-4xl text-white">
-              Absolute Gaze
-            </span>
+          <span 
+  className="cursor-pointer font-extrabold text-3xl md:text-5xl uppercase"
+  style={{
+    color: "transparent",
+    backgroundImage: "linear-gradient(90deg, #C0C0C0, #FFFFFF)",
+    WebkitBackgroundClip: "text",
+    letterSpacing: "0.08em",
+    textShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)"
+  }}>
+  DialecTonic
+</span>
+
+
           </Link>
 
           {/* Mobile Menu Button */}
