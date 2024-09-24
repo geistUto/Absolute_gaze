@@ -77,7 +77,7 @@ const Header = () => {
                 )}
                 {router.pathname !== '/articles' && (
                 <Link href="/articles">
-                  <a className="block text-lg font-semibold">
+                  <a className="text-lg text-white font-semibold">
                     Articles
                   </a>
                 </Link>
