@@ -4,13 +4,13 @@
   background-color: transparent;
   padding: 1rem; /* Increased padding for better spacing */
   color: #f1f1f1;
-  width: 80%;
+  width: 85%;
   margin: auto;
 }
 
 @media (max-width: 768px) {
   .snippetContainer {
-    width: 95%;
+    width: 99%;
   }
 }
 
@@ -51,7 +51,7 @@
 }
 
 .snippetItem {
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: rgba(40, 40, 40, 0.7); 
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -86,8 +86,8 @@
 
 .arrow {
   margin: 0 0.5rem;
-  color: #4da6ff; /* Matches link color */
-  font-size: 1.2rem;
+  color: #a266fb; /* Matches link color */
+  font-size: 1.3rem;
 }
 
 /* Tags */
