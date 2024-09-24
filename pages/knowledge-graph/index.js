@@ -35,7 +35,7 @@ const KnowledgeGraph = () => {
 
   const createForceDirectedGraph = () => {
     d3.select('#knowledgeGraph').selectAll('*').remove(); // Clear existing SVG content
-  
+    
     const width = window.innerWidth * 1;
     const height = window.innerHeight * 0.9;
   
@@ -57,6 +57,7 @@ const KnowledgeGraph = () => {
       id: d.realmName.trim(),
       snippetCount: d.snippetCount,
       realmId: d.realmId, 
+      parentRealm: d.parentRealmName.trim(),
     }));
   
     const parentNodes = [...new Set(realmData.map(d => d.parentRealmName.trim()))]
@@ -72,19 +73,31 @@ const KnowledgeGraph = () => {
         target: d.realmName.trim(),
       }));
   
-    // Precompute radius
     const radius = d => Math.sqrt(d.snippetCount || 1) * 8;
+    const padding = 5; 
   
-    const padding = 5; // Add some padding for collision
+    // Generate unique colors for parent realms
+    const parentRealmColors = d3.scaleOrdinal(d3.schemeCategory10);
+    const colorMap = {};
   
-    // Increase the distance between nodes, adjust link distance and charge strength
+    // Assign colors to parent realms
+    parentNodes.forEach((parent, index) => {
+      colorMap[parent.id] = parentRealmColors(index); // Assign a unique color
+    });
+  
+    // Create a function to generate lighter shades for child realms
+    const getChildRealmColor = (parentRealm, factor = 0.5) => {
+      const parentColor = d3.color(colorMap[parentRealm]);
+      return d3.interpolateRgb(parentColor, '#ffffff')(factor); // Blend towards white for lighter shades
+    };
+  
     const simulation = d3.forceSimulation(allNodes)
-      .alphaDecay(0.05) // Slower decay for smoother simulation
-      .velocityDecay(0.8) // Less velocity decay for smoother node movement
-      .force('link', d3.forceLink(links).id(d => d.id).distance(200)) // Increase link distance for spacing
-      .force('charge', d3.forceManyBody().strength(-500)) // Increase repelling force for more space between nodes
+      .alphaDecay(0.05)
+      .velocityDecay(0.8)
+      .force('link', d3.forceLink(links).id(d => d.id).distance(200))
+      .force('charge', d3.forceManyBody().strength(-500))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(d => radius(d) + padding)); // Default collision radius
+      .force('collision', d3.forceCollide().radius(d => radius(d) + padding));
   
     // Draw links
     const link = svg.append('g')
@@ -93,15 +106,17 @@ const KnowledgeGraph = () => {
       .join('line')
       .attr('stroke-width', 2)
       .attr('stroke', '#888')
-      .style('pointer-events', 'none'); // Disable pointer events for better performance
+      .style('pointer-events', 'none');
   
-    // Draw nodes
     const node = svg.append('g')
       .selectAll('circle')
       .data(allNodes)
       .join('circle')
       .attr('r', d => radius(d))
-      .attr('fill', '#69b3a2')
+      .attr('fill', d => {
+        // If node is a child realm, derive its color from the parent
+        return d.parentRealm && d.parentRealm !== 'None' ? getChildRealmColor(d.parentRealm) : colorMap[d.id];
+      })
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
       .on('click', (event, d) => {
@@ -125,7 +140,6 @@ const KnowledgeGraph = () => {
           d.fy = null;
         }));
   
-    // Draw labels
     const text = svg.append('g')
       .selectAll('text')
       .data(allNodes)
@@ -136,7 +150,6 @@ const KnowledgeGraph = () => {
       .attr('fill', '#fff')
       .text(d => d.id);
   
-    // Run simulation
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
@@ -153,6 +166,7 @@ const KnowledgeGraph = () => {
         .attr('y', d => d.y + 3);
     });
   };
+  
   
 
   return <svg id="knowledgeGraph"></svg>;

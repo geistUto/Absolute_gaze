@@ -33,19 +33,17 @@ const Header = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
-          <span 
-  className="cursor-pointer font-extrabold text-3xl md:text-5xl uppercase"
-  style={{
-    color: "transparent",
-    backgroundImage: "linear-gradient(90deg, #C0C0C0, #FFFFFF)",
-    WebkitBackgroundClip: "text",
-    letterSpacing: "0.08em",
-    textShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)"
-  }}>
-  DialecTonic
-</span>
-
-
+            <span 
+              className="cursor-pointer font-extrabold text-3xl md:text-5xl uppercase"
+              style={{
+                color: "transparent",
+                backgroundImage: "linear-gradient(90deg, #C0C0C0, #FFFFFF)",
+                WebkitBackgroundClip: "text",
+                letterSpacing: "0.08em",
+                textShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)"
+              }}>
+              DialecTonic
+            </span>
           </Link>
 
           {/* Mobile Menu Button */}
@@ -67,22 +65,26 @@ const Header = () => {
           <div className="hidden md:flex space-x-6 items-center">
             {isAuthenticated ? (
               <>
-                <Link href="/snippets">
-                  <a className="text-lg text-white font-semibold">Snippets</a>
-                </Link>
-                <Link href="/knowledge-graph">
-                  <a className="text-lg text-white font-semibold">Knowledge Graph</a>
-                </Link>
+                {router.pathname !== '/snippets' && (
+                  <Link href="/snippets">
+                    <a className="text-lg text-white font-semibold">Snippets</a>
+                  </Link>
+                )}
+                {router.pathname !== '/knowledge-graph' && (
+                  <Link href="/knowledge-graph">
+                    <a className="text-lg text-white font-semibold">Knowledge Graph</a>
+                  </Link>
+                )}
                 <button
                   onClick={handleSignOut}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 text-lg rounded"
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-5 text-lg rounded-md"
                 >
                   Sign Out
                 </button>
               </>
             ) : (
               <Link href="/auth">
-                <a className="bg-purple-800 hover:bg-blue-900 text-white font-bold py-3 px-6 text-lg rounded">
+                <a className="bg-purple-800 hover:bg-blue-900 text-white font-bold py-3 px-5 text-lg rounded-md">
                   Sign In
                 </a>
               </Link>
@@ -96,22 +98,26 @@ const Header = () => {
         <div className="md:hidden bg-gray-800 text-white p-4 space-y-4">
           {isAuthenticated ? (
             <>
-              <Link href="/snippets">
-                <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
-                  Snippets
-                </a>
-              </Link>
-              <Link href="/knowledge-graph">
-                <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
-                  Knowledge Graph
-                </a>
-              </Link>
+              {router.pathname !== '/snippets' && (
+                <Link href="/snippets">
+                  <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
+                    Snippets
+                  </a>
+                </Link>
+              )}
+              {router.pathname !== '/knowledge-graph' && (
+                <Link href="/knowledge-graph">
+                  <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
+                    Knowledge Graph
+                  </a>
+                </Link>
+              )}
               <button
                 onClick={() => {
                   handleSignOut();
                   setMenuOpen(false);
                 }}
-                className="block w-full text-left bg-red-500 hover:bg-red-700 py-3 px-6 text-lg rounded"
+                className="block w-full text-left bg-red-500 hover:bg-red-700 py-3 px-6 text-lg rounded-md"
               >
                 Sign Out
               </button>
