@@ -88,20 +88,6 @@ const getRandomTitle = () => {
           Sign Up
         </button>
       </div>
-
-      <div className='grid grid-cols-1 lg:grid-cols-12 gap-12'>
-        <div className='lg:col-span-9 col-span-1'>
-          {/* Placeholder for Articles content */}
-          <h2 className='text-xl font-bold mb-4'>Articles</h2>
-          <p>Your insightful articles are just a click away! Explore various topics and expand your knowledge.</p>
-        </div>
-        <div className='lg:col-span-3 col-span-1'>
-          <div className='lg:sticky relative top-8'>
-            {/* <PostWidget />
-            <Categories /> */}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

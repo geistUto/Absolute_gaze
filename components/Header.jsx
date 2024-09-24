@@ -75,6 +75,13 @@ const Header = () => {
                     <a className="text-lg text-white font-semibold">Knowledge Graph</a>
                   </Link>
                 )}
+                {router.pathname !== '/articles' && (
+                <Link href="/articles">
+                  <a className="block text-lg font-semibold">
+                    Articles
+                  </a>
+                </Link>
+              )}
                 <button
                   onClick={handleSignOut}
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-5 text-lg rounded-md"
@@ -109,6 +116,13 @@ const Header = () => {
                 <Link href="/knowledge-graph">
                   <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
                     Knowledge Graph
+                  </a>
+                </Link>
+              )}
+              {router.pathname !== '/articles' && (
+                <Link href="/articles">
+                  <a className="block text-lg font-semibold" onClick={() => setMenuOpen(false)}>
+                    Articles
                   </a>
                 </Link>
               )}
