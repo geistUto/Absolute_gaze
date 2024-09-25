@@ -86,13 +86,13 @@ const Header = () => {
                   onClick={handleSignOut}
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-5 text-lg rounded-md"
                 >
-                  Sign Out
+                  Log Out
                 </button>
               </>
             ) : (
               <Link href="/auth">
                 <a className="bg-purple-800 hover:bg-blue-900 text-white font-bold py-3 px-5 text-lg rounded-md">
-                  Sign In
+                  Log In
                 </a>
               </Link>
             )}
@@ -133,7 +133,7 @@ const Header = () => {
                 }}
                 className="block w-full text-left bg-red-500 hover:bg-red-700 py-3 px-6 text-lg rounded-md"
               >
-                Sign Out
+                Log Out
               </button>
             </>
           ) : (
@@ -142,7 +142,7 @@ const Header = () => {
                 className="block w-full text-left bg-purple-800 hover:bg-blue-900 py-3 px-6 text-lg rounded"
                 onClick={() => setMenuOpen(false)}
               >
-                Sign In
+                Log In
               </a>
             </Link>
           )}

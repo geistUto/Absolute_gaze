@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import axios from 'axios';
 import { useRouter } from 'next/router'; 
+import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
 
 const KnowledgeGraph = () => {
-  const [realmData, setRealmData] = useState([]);
+   const { realmData, setRealmData } = useKnowledgeGraph();
   const router = useRouter();
 
   useEffect(() => {
     const fetchKnowledgeGraph = async () => {
+      if (realmData.length === 0) {
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/realms/engagement/graphical`,
@@ -23,6 +25,7 @@ const KnowledgeGraph = () => {
       } catch (error) {
         console.error('Error fetching realms:', error);
       }
+    }
     };
     fetchKnowledgeGraph();
   }, []);
@@ -35,7 +38,7 @@ const KnowledgeGraph = () => {
 
   const createForceDirectedGraph = () => {
     d3.select('#knowledgeGraph').selectAll('*').remove(); // Clear existing SVG content
-    
+  
     const width = window.innerWidth * 1;
     const height = window.innerHeight * 0.9;
   
@@ -53,28 +56,38 @@ const KnowledgeGraph = () => {
       }))
       .append('g');
   
+    // Create nodes
     const nodes = realmData.map(d => ({
       id: d.realmName.trim(),
       snippetCount: d.snippetCount,
-      realmId: d.realmId, 
+      realmId: d.realmId,
       parentRealm: d.parentRealmName.trim(),
     }));
   
-    const parentNodes = [...new Set(realmData.map(d => d.parentRealmName.trim()))]
-      .filter(name => name !== 'None')
-      .map(name => ({ id: name }));
+    // Create parent nodes
+    const parentNodes = [...new Set(
+      realmData
+        .filter(d => d.parentRealmName && d.parentRealmName.trim() !== 'None') // Filter out 'None' parents
+        .map(d => d.parentRealmName.trim()) // Get unique parent realm names
+    )]
+      .filter(parentName => !nodes.some(node => node.id === parentName)) // Ensure no duplicates
+      .map(parentName => ({
+        id: parentName, // Only ID for parent nodes
+      }));
   
+    // Combine child and parent nodes into one unique node list
     const allNodes = [...nodes, ...parentNodes];
   
+    // Create links between realms and parent realms
     const links = realmData
-      .filter(d => d.parentRealmName && d.parentRealmName.trim() !== 'None')
+      .filter(d => d.parentRealmName && d.parentRealmName.trim() !== 'None') // Filter out 'None' parents
       .map(d => ({
-        source: d.parentRealmName.trim(),
-        target: d.realmName.trim(),
+        source: d.parentRealmName.trim(), // Parent realm as the source
+        target: d.realmName.trim(),       // Child realm as the target
       }));
   
     const radius = d => Math.sqrt(d.snippetCount || 1) * 8;
-    const padding = 5; 
+    const padding = 5;
   
     // Generate unique colors for parent realms
     const parentRealmColors = d3.scaleOrdinal(d3.schemeCategory10);
@@ -112,7 +125,7 @@ const KnowledgeGraph = () => {
       .selectAll('circle')
       .data(allNodes)
       .join('circle')
-      .attr('r', d => d.snippetCount > 0 ? radius(d) : 0.1 )
+      .attr('r', d => d.snippetCount > 0 ? radius(d) : 0.1)
       .attr('fill', d => {
         // If node is a child realm, derive its color from the parent
         return d.parentRealm && d.parentRealm !== 'None' ? getChildRealmColor(d.parentRealm) : colorMap[d.id];

@@ -3,7 +3,8 @@ import {Layout} from '../components'
 import 'tailwindcss/tailwind.css'
 import '../styles/globals.scss'
 import Head from 'next/head'
-
+import { SnippetsProvider } from '../context/SnippetsContext';
+import { KnowledgeGraphProvider } from '../context/KnowledgeGraphContext';
 function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -12,7 +13,11 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/eye-full.svg" />
       </Head>
   <Layout>
-  <Component {...pageProps} />
+    <SnippetsProvider>
+      <KnowledgeGraphProvider>
+        <Component {...pageProps} />
+      </KnowledgeGraphProvider>
+    </SnippetsProvider>
   </Layout>
   </>
   )

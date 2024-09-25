@@ -4,18 +4,21 @@ import styles from '../../styles/Snippets.module.css';
 import Link from 'next/link';
 import { PiGraphBold } from "react-icons/pi";
 import { MdOutlineAutoGraph } from "react-icons/md";
+import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
+import { useSnippets } from '../../context/SnippetsContext';
+
 
 export default function Snippets() {
   const [currentSnippet, setCurrentSnippet] = useState('');
-  const [snippets, setSnippets] = useState([]);
+  // const [snippets, setSnippets] = useState([]);
   const [snippetId, setSnippetId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-
+  const { setRealmData } = useKnowledgeGraph();
+  const { snippets,  setSnippets } = useSnippets();
   // Fetch recent snippets on load
   useEffect(() => {
-    fetchRecentSnippets();
+    if (snippets.length === 0) fetchRecentSnippets();
   }, []);
-
   const fetchRecentSnippets = async () => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/recent`, {
@@ -28,6 +31,7 @@ export default function Snippets() {
       console.error('Error fetching snippets:', error);
     }
   };
+ 
 
   const handleSnippetBlur = async () => {
     if (currentSnippet.trim()) {
@@ -43,7 +47,9 @@ export default function Snippets() {
           }
         );
         setSnippetId(response.data.uuid); 
-        setCurrentSnippet(''); 
+        setCurrentSnippet('');
+        setRealmData([]);
+        setSnippets([]);
         setTimeout(() => {
           fetchRecentSnippets();
       }, 10000);
