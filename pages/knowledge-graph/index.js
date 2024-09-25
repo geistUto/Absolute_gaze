@@ -112,7 +112,7 @@ const KnowledgeGraph = () => {
       .selectAll('circle')
       .data(allNodes)
       .join('circle')
-      .attr('r', d => radius(d))
+      .attr('r', d => d.snippetCount > 0 ? radius(d) : 0.1 )
       .attr('fill', d => {
         // If node is a child realm, derive its color from the parent
         return d.parentRealm && d.parentRealm !== 'None' ? getChildRealmColor(d.parentRealm) : colorMap[d.id];
@@ -148,6 +148,11 @@ const KnowledgeGraph = () => {
       .attr('y', 3)
       .attr('font-size', '12px')
       .attr('fill', '#fff')
+      .on('click', (event, d) => {
+        if (d.realmId) {
+          router.push(`/realms/${d.realmId}`);
+        }
+      })
       .text(d => d.id);
   
     simulation.on('tick', () => {
