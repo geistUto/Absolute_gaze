@@ -39,12 +39,13 @@
   text-align: center;
 }
 
+
 .snippetList {
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 0.5rem;
+  padding: 0.25rem;
   background-color: transparent;
   color: #f0f0f0;
   border-radius: 8px;
@@ -52,11 +53,23 @@
 
 .snippetItem {
   padding: 0.5rem;
-  background-color: rgba(40, 40, 40, 0.7); 
+  background-color: rgba(40, 40, 40, 0.7);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
 }
+
+
+@media screen and (max-width: 600px) {
+  .snippetItem {
+    font-size: 0.875rem; 
+  }
+}
+
 
 .snippetItem:hover {
   transform: translateY(-5px);

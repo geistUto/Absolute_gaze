@@ -159,10 +159,11 @@ const Auth = () => {
 
 const styles = {
     container: {
-        backgroundColor: 'black',
+        backgroundColor: 'rgba(40, 40, 40, 0.7)',
         color: 'white',
         padding: '2rem',
         maxWidth: '400px',
+        marginTop:'2rem',
         margin: 'auto',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
