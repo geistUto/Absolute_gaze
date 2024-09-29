@@ -163,14 +163,14 @@ const styles = {
         color: 'white',
         padding: '2rem',
         maxWidth: '400px',
-        marginTop:'2rem',
+        marginTop:'3rem',
         margin: 'auto',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     },
     heading: {
         textAlign: 'center',
-        marginBottom: '1.5rem',
+        marginBottom: '1rem',
     },
     inputGroup: {
         marginBottom: '1rem',

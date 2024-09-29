@@ -61,18 +61,19 @@ const KnowledgeGraph = () => {
       id: d.realmName.trim(),
       snippetCount: d.snippetCount,
       realmId: d.realmId,
-      parentRealm: d.parentRealmName.trim(),
+      parentRealms: d.parentRealmNames ? d.parentRealmNames.map(parent => parent.trim()) : [],
     }));
   
     // Create parent nodes
     const parentNodes = [...new Set(
       realmData
-        .filter(d => d.parentRealmName && d.parentRealmName.trim() !== 'None') // Filter out 'None' parents
-        .map(d => d.parentRealmName.trim()) // Get unique parent realm names
+        .flatMap(d => d.parentRealmNames || []) // Use flatMap to handle multiple parents
+        .filter(parentName => parentName.trim() !== 'None') // Filter out 'None' parents
+        .map(parentName => parentName.trim())
     )]
       .filter(parentName => !nodes.some(node => node.id === parentName)) // Ensure no duplicates
       .map(parentName => ({
-        id: parentName, // Only ID for parent nodes
+        id: parentName,
       }));
   
     // Combine child and parent nodes into one unique node list
@@ -80,11 +81,11 @@ const KnowledgeGraph = () => {
   
     // Create links between realms and parent realms
     const links = realmData
-      .filter(d => d.parentRealmName && d.parentRealmName.trim() !== 'None') // Filter out 'None' parents
-      .map(d => ({
-        source: d.parentRealmName.trim(), // Parent realm as the source
-        target: d.realmName.trim(),       // Child realm as the target
-      }));
+      .flatMap(d => (d.parentRealmNames || []).map(parent => ({
+        source: parent.trim(), // Each parent realm as the source
+        target: d.realmName.trim(), // Child realm as the target
+      })))
+      .filter(link => link.source !== 'None'); // Filter out 'None' parents
   
     const radius = d => Math.sqrt(d.snippetCount || 1) * 8;
     const padding = 5;
@@ -107,17 +108,20 @@ const KnowledgeGraph = () => {
     const simulation = d3.forceSimulation(allNodes)
       .alphaDecay(0.05)
       .velocityDecay(0.8)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(200))
-      .force('charge', d3.forceManyBody().strength(-500))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(d => radius(d) + padding));
+      .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+        const textLength = d.source.id.length;
+        const baseDistance = 30;
+        return baseDistance + textLength * 5;
+      }))
+      .force('charge', d3.forceManyBody().strength(-500 * zoomLevel))
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.2))
+      .force('collision', d3.forceCollide().radius(d => radius(d) + padding / zoomLevel));
   
-    // Draw links
     const link = svg.append('g')
       .selectAll('line')
       .data(links)
       .join('line')
-      .attr('stroke-width', 2)
+      .attr('stroke-width', d => d.strength ? d.strength * 2 : 2)
       .attr('stroke', '#888')
       .style('pointer-events', 'none');
   
@@ -127,8 +131,10 @@ const KnowledgeGraph = () => {
       .join('circle')
       .attr('r', d => d.snippetCount > 0 ? radius(d) : 0.1)
       .attr('fill', d => {
-        // If node is a child realm, derive its color from the parent
-        return d.parentRealm && d.parentRealm !== 'None' ? getChildRealmColor(d.parentRealm) : colorMap[d.id];
+        if (d.parentRealms && d.parentRealms.length > 0) {
+          return getChildRealmColor(d.parentRealms[0]); // Use the first parent for color
+        }
+        return colorMap[d.id]; // Parent node color
       })
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
@@ -181,9 +187,10 @@ const KnowledgeGraph = () => {
   
       text
         .attr('x', d => d.x + 6)
-        .attr('y', d => d.y + 3);
+        .attr('y', d => d.y + radius(d) + 5);
     });
   };
+  
   
   
 
