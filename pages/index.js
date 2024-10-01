@@ -50,7 +50,7 @@ const getRandomTitle = () => {
   }, [router]);
 
   const handleSignUp = () => {
-    router.push('/auth'); 
+    router.push('/auth?login=false'); 
   };
 
   return (

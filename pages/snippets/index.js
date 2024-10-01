@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../../styles/Snippets.module.css';
 import Link from 'next/link';
@@ -8,30 +8,56 @@ import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
 import { useSnippets } from '../../context/SnippetsContext';
 
 
+
 export default function Snippets() {
   const [currentSnippet, setCurrentSnippet] = useState('');
-  // const [snippets, setSnippets] = useState([]);
   const [snippetId, setSnippetId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const { setRealmData } = useKnowledgeGraph();
-  const { snippets,  setSnippets } = useSnippets();
+  const { snippets, setSnippets } = useSnippets();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isSearching, setIsSearching] = useState(false); // To distinguish between search and recent
+  const [totalPages, setTotalPages] = useState(1);
+
   // Fetch recent snippets on load
   useEffect(() => {
-    if (snippets.length === 0) fetchRecentSnippets();
-  }, []);
-  const fetchRecentSnippets = async () => {
+    if (!isSearching && snippets.length === 0) fetchRecentSnippets(currentPage);
+  }, [currentPage, isSearching]);
+
+  const fetchRecentSnippets = async (page = 1) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/recent`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/recent?page=${page}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       setSnippets(response.data.data);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error('Error fetching snippets:', error);
+      console.error('Error fetching recent snippets:', error);
     }
   };
- 
+
+  const searchSnippets = async (page = 1) => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/search`, {
+        params: {
+          query: searchQuery,
+          page: page,
+          size: 5,
+          searchRealm: true
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setSnippets(response.data.data.content);
+      setTotalPages(response.data.data.totalPages);
+    } catch (error) {
+      console.error('Error searching snippets:', error);
+    }
+  };
 
   const handleSnippetBlur = async () => {
     if (currentSnippet.trim()) {
@@ -51,8 +77,8 @@ export default function Snippets() {
         setRealmData([]);
         setSnippets([]);
         setTimeout(() => {
-          fetchRecentSnippets();
-      }, 10000);
+          fetchRecentSnippets(); // Reload recent snippets after save
+        }, 10000);
       } catch (error) {
         console.error('Error saving snippet:', error);
       } finally {
@@ -61,6 +87,25 @@ export default function Snippets() {
     }
   };
 
+  // Handle search submission
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setIsSearching(true);
+    setCurrentPage(1); // Reset to page 1 on new search
+    searchSnippets(1); // Fetch first page of search results
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (isSearching) {
+      searchSnippets(page); // Navigate through search results
+    } else {
+      fetchRecentSnippets(page); // Navigate through recent snippets
+    }
+  };
+  
+  
+ 
   return (
     <div className={styles.snippetContainer}>
       <div className={styles.header}>
@@ -75,12 +120,27 @@ export default function Snippets() {
         rows="5"
       />
       {isSaving && <div className={styles.saving}>Saving...</div>}
+
+      {/* Sleek silver search bar */}
+      <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search snippets..."
+          className={styles.searchBar}
+          // style={{ backgroundColor: 'silver', color: 'black' }} // Silver color style for the search bar
+        />
+        <button type="submit" className={styles.searchButton}>Search</button>
+      </form>
+
+      {/* Snippet List */}
       <div className={styles.snippetList}>
         {snippets.map((snippet) => (
           <div key={snippet.uuid} className={styles.snippetItem}>
             <h3>{snippet.title}</h3>
             <p>{snippet.content}</p>
-  
+
             <div className={styles.realmInfo}>
               <div className={styles.realmConnection}>
                 {snippet?.realm?.parentRealm && (
@@ -106,7 +166,7 @@ export default function Snippets() {
                 </Link>
               </div>
             </div>
-  
+
             <div className={styles.tags}>
               {snippet.realmsIntegrated && snippet.realmsIntegrated.length > 0 ? (
                 snippet.realmsIntegrated.map((realm) => (
@@ -121,12 +181,24 @@ export default function Snippets() {
                 <span>No concepts available</span>
               )}
             </div>
-  
-            {/* Display createdAt date */}
+
             <div className={styles.createdAt}>
-              Created At: {new Date(snippet.createdAt).toLocaleString()} {/* Includes time */}
+              Created At: {new Date(snippet.createdAt).toLocaleString()}
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className={styles.pagination}>
+        {Array.from({ length: totalPages - 1 }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? styles.activePage : ''}
+          >
+            {index + 1}
+          </button>
         ))}
       </div>
     </div>

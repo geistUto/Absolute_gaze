@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { useRouter } from 'next/router';
 
 const Auth = () => {
@@ -9,7 +9,11 @@ const Auth = () => {
     const [otpSent, setOtpSent] = useState(false);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const router = useRouter();
-
+    useEffect(() => {
+        if (router.query.login === 'false') {
+          setIsLogin(false); 
+        }
+      }, [router.query]);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -44,7 +48,6 @@ const Auth = () => {
                 console.error('Failed to send reset link');
             }
         } else if (otpSent && !isLogin) {
-            // Verify OTP for signup
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/geists/auth/verify-otp?email=${email}&otp=${otp}`, {
                 method: 'POST',
                 headers: {
@@ -163,10 +166,11 @@ const styles = {
         color: 'white',
         padding: '2rem',
         maxWidth: '400px',
-        marginTop:'3rem',
+        marginTop:'4rem !important',
         margin: 'auto',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        // paddingTop: '1px',
     },
     heading: {
         textAlign: 'center',
