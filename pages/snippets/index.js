@@ -7,12 +7,13 @@ import { MdOutlineAutoGraph } from "react-icons/md";
 import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
 import { useSnippets } from '../../context/SnippetsContext';
 import { LuSearch } from "react-icons/lu";
-
+import { Loader } from '../../components/Loader';
 
 export default function Snippets() {
   const [currentSnippet, setCurrentSnippet] = useState('');
   const [snippetId, setSnippetId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
   const { setRealmData } = useKnowledgeGraph();
   const { snippets, setSnippets } = useSnippets();
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,7 +62,9 @@ export default function Snippets() {
 
   const handleSnippetBlur = async () => {
     if (currentSnippet.trim()) {
-      setIsSaving(true);
+      setIsSaving(true); // Start showing the loader
+      setSaveMessage('Saving...'); // Initial save message
+
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/v1/mind-snippets/add-update`,
@@ -72,17 +75,24 @@ export default function Snippets() {
             },
           }
         );
-        setSnippetId(response.data.uuid); 
-        setCurrentSnippet('');
-        setRealmData([]);
-        setSnippets([]);
+
+        setSnippetId(response.data.uuid); // Store new snippet ID
+        setSaveMessage('Snippet saved successfully!'); // Success message
+
+        // Delay clearing the form and fetching new snippets
         setTimeout(() => {
-          fetchRecentSnippets(); // Reload recent snippets after save
-        }, 10000);
+          setCurrentSnippet('');
+          setRealmData([]);
+          setSnippets([]);
+          fetchRecentSnippets(); 
+        }, 13000);
+
       } catch (error) {
         console.error('Error saving snippet:', error);
+        setSaveMessage('Error saving snippet. Please try again.');
       } finally {
-        setIsSaving(false);
+        setIsSaving(false); // Hide loader
+        setTimeout(() => setSaveMessage(''), 2000); // Clear message after 2 seconds
       }
     }
   };
@@ -186,7 +196,15 @@ export default function Snippets() {
             </div>
 
             <div className={styles.createdAt}>
-              Created At: {new Date(snippet.createdAt).toLocaleString()}
+              Created At: {new Date(snippet.createdAt).toLocaleString('en-US', {
+  day: 'numeric',
+  month: 'short', // Change to 'long' for full month names
+  year: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  hour12: true,  // Use false for 24-hour format
+})
+}
             </div>
           </div>
         ))}
@@ -200,7 +218,7 @@ export default function Snippets() {
             onClick={() => handlePageChange(index + 1)}
             className={currentPage === index + 1 ? styles.activePage : ''}
           >
-            {index + 1}
+            pages  {index + 1}
           </button>
         ))}
       </div>
