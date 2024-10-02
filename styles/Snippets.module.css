@@ -72,53 +72,64 @@
 
 /* Styles for the search form */
 .searchForm {
+  color: #fdffff;
   display: flex; /* Use flexbox for alignment */
   justify-content: center; /* Center align items */
   margin-top: 2rem; /* Space above the form */
 }
 
 /* Styles for the search bar */
+.searchContainer {
+  position: relative; /* Ensure the icon is positioned relative to this container */
+  width: 60%; /* Adjust the container width */
+  display: flex; /* Flex layout for input and button alignment */
+  align-items: center; /* Vertically center the content */
+  margin: 0 auto; /* Center the search bar horizontally if needed */
+}
+
 .searchBar {
-  background-color: rgba(104, 39, 89, 0.8); /* Slightly transparent background */
-  color: black; /* Text color */
-  padding: 0.5rem 1rem; /* Padding for comfortable input */
+  background-color: rgba(68, 12, 104, 0.8); /* Slightly transparent background */
+  color: white; /* Text color */
+  padding: 0.5rem 1.5rem 0.5rem 1rem; /* Extra padding on the right for the icon */
   border-radius: 25px; /* Rounded corners */
-  /* Light border for definition */
-   /* Subtle shadow */
+   /* Light border for definition */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   transition: all 0.3s ease; /* Smooth transition effects */
   outline: none; /* Remove default outline */
-  width: 60%; /* Full width of the container */
+  width: 100%; /* Full width of the container */
   font-weight: bold; /* Make text bold */
 }
+
 @media screen and (max-width: 600px) {
+  .searchContainer {
+    width: 90%; /* Adjust the width for mobile */
+  }
   .searchBar {
     font-size: 0.875rem;
-    width: 90%; 
   }
 }
+
+.searchIcon {
+  position: absolute;
+  right: 15px; /* Adjust this based on your padding */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px; /* Adjust icon size */
+  color: #f5d03d;
+}
+
+.searchIcon:hover {
+  color: #555; /* Change color on hover */
+}
+
 /* Styles for the search bar on focus */
 .searchBar:focus {
   border-color: #9032d8; /* Change border color on focus */
 }
 
-/* Styles for the search button */
-.searchButton {
-  background-color:rgb(137, 103, 179,0.8); 
-  text-size-adjust: 1rem;
-  font-weight: bold;/* Primary button color */
-  color: rgba(6, 7, 6, 0.909); /* Text color for button */
-  padding: 0.5rem 1rem; /* Padding for comfortable click area */
-  border-radius: 25px; /* Match rounded corners with search bar */
-  border: 2rem; /* Remove default border */
-  cursor: pointer; /* Pointer cursor on hover */
-  margin-left: 1rem; /* Space between input and button */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-}
 
-/* Styles for the search button on hover */
-.searchButton:hover {
-  background-color: #8300b3; /* Darker shade on hover */
-}
+
 .snippetItem:hover {
   transform: translateY(-5px);
 }

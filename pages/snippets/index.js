@@ -6,7 +6,7 @@ import { PiGraphBold } from "react-icons/pi";
 import { MdOutlineAutoGraph } from "react-icons/md";
 import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
 import { useSnippets } from '../../context/SnippetsContext';
-
+import { LuSearch } from "react-icons/lu";
 
 
 export default function Snippets() {
@@ -123,16 +123,19 @@ export default function Snippets() {
 
       {/* Sleek silver search bar */}
       <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search snippets..."
-          className={styles.searchBar}
-          // style={{ backgroundColor: 'silver', color: 'black' }} // Silver color style for the search bar
-        />
-        <button type="submit" className={styles.searchButton}>Search</button>
-      </form>
+  <div className={styles.searchContainer}>
+    <input
+      type="text"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      placeholder="Search snippets..."
+      className={styles.searchBar}
+    />
+    <button type="submit" className={styles.searchIcon}>
+      <LuSearch />
+    </button>
+  </div>
+</form>
 
       {/* Snippet List */}
       <div className={styles.snippetList}>
