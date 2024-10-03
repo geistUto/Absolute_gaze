@@ -7,7 +7,7 @@ import { MdOutlineAutoGraph } from "react-icons/md";
 import { useKnowledgeGraph } from '../../context/KnowledgeGraphContext';
 import { useSnippets } from '../../context/SnippetsContext';
 import { LuSearch } from "react-icons/lu";
-import { Loader } from '../../components/Loader';
+import { CircleLoader } from 'react-spinners';
 
 export default function Snippets() {
   const [currentSnippet, setCurrentSnippet] = useState('');
@@ -55,6 +55,7 @@ export default function Snippets() {
       });
       setSnippets(response.data.data.content);
       setTotalPages(response.data.data.totalPages);
+      setIsSearching(false);
     } catch (error) {
       console.error('Error searching snippets:', error);
     }
@@ -144,6 +145,7 @@ export default function Snippets() {
     <button type="submit" className={styles.searchIcon}>
       <LuSearch />
     </button>
+    {isSearching && <CircleLoader color="#FFD700" size={25} className={styles.loader} />}
   </div>
 </form>
 
@@ -196,7 +198,7 @@ export default function Snippets() {
             </div>
 
             <div className={styles.createdAt}>
-              Created At: {new Date(snippet.createdAt).toLocaleString('en-US', {
+              Created At: {new Date(snippet.createdAt +'z').toLocaleString('en-US', {
   day: 'numeric',
   month: 'short', // Change to 'long' for full month names
   year: 'numeric',
