@@ -51,7 +51,7 @@ const KnowledgeGraph = () => {
       .call(d3.zoom().on('zoom', (event) => {
         zoomLevel = event.transform.k; // Capture the zoom level
         svg.attr('transform', event.transform);
-        simulation.force('collision', d3.forceCollide().radius(d => (radius(d) + padding) / zoomLevel)); // Adjust collision radius based on zoom
+        // simulation.force('collision', d3.forceCollide().radius(d => (radius(d) + padding) / zoomLevel)); // Adjust collision radius based on zoom
         simulation.alpha(0.3).restart(); // Reheat simulation when zoom changes to reapply forces
       }))
       .append('g');
@@ -113,9 +113,9 @@ const KnowledgeGraph = () => {
         const baseDistance = 30;
         return baseDistance + textLength * 5;
       }))
-      .force('charge', d3.forceManyBody().strength(-500 * zoomLevel))
-      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.2))
-      .force('collision', d3.forceCollide().radius(d => radius(d) + padding / zoomLevel));
+      .force('charge', d3.forceManyBody().strength(-200 * zoomLevel))
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.8))
+      .force('collision', d3.forceCollide().radius(d => radius(d) + padding / 2 *zoomLevel));
   
     const link = svg.append('g')
       .selectAll('line')

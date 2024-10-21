@@ -26,12 +26,25 @@
   width: 100%;
   padding: 1rem;
   border-radius: 8px;
-  background-color:  rgba(40, 40, 40, 0.7);
+  background-color: rgba(40, 40, 40, 0.7);
   color: #f1f1f1;
   border: none;
   margin-bottom: 1rem;
   font-size: 1.1rem;
+  min-height: 100px; /* Set a minimum height */
+  resize: none; /* Disable manual resizing */
 }
+
+/* Apply automatic height adjustment for small screens */
+@media (max-width: 768px) {
+  .textarea {
+    height: auto; /* Allow the textarea to grow based on content */
+    max-height: none;
+    overflow: hidden; /* Hide the scrollbar */
+  }
+}
+
+
 
 .saving {
   color: #5cb85c;
@@ -63,7 +76,16 @@
   box-sizing: border-box;
 }
 
-
+.loader{
+  margin: 0.5rem; 
+}
+.loaderCenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Ensures the height is at least the full viewport height */
+  margin: 0; /* Reset margin */
+}
 @media screen and (max-width: 600px) {
   .snippetItem {
     font-size: 0.875rem; 

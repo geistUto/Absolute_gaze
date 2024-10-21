@@ -20,11 +20,15 @@ export default function Snippets() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSearching, setIsSearching] = useState(false); // To distinguish between search and recent
   const [totalPages, setTotalPages] = useState(1);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   // Fetch recent snippets on load
   useEffect(() => {
-    if (!isSearching && snippets.length === 0) fetchRecentSnippets(currentPage);
-  }, [currentPage, isSearching]);
+    if (isFirstLoad) {
+      fetchRecentSnippets(currentPage);
+      setIsFirstLoad(false); 
+    }
+  }, [currentPage, isFirstLoad]);
 
   const fetchRecentSnippets = async (page = 1) => {
     try {
@@ -37,6 +41,10 @@ export default function Snippets() {
       setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching recent snippets:', error);
+      if (error.message.includes('401')) {
+        localStorage.removeItem('token'); 
+        router.push('/auth'); 
+      }
     }
   };
 
@@ -63,8 +71,8 @@ export default function Snippets() {
 
   const handleSnippetBlur = async () => {
     if (currentSnippet.trim()) {
-      setIsSaving(true); // Start showing the loader
-      setSaveMessage('Saving...'); // Initial save message
+      setIsSaving(true); 
+      setSaveMessage('Saving...'); 
 
       try {
         const response = await axios.post(
@@ -77,41 +85,45 @@ export default function Snippets() {
           }
         );
 
-        setSnippetId(response.data.uuid); // Store new snippet ID
-        setSaveMessage('Snippet saved successfully!'); // Success message
+        setSnippetId(response.data.uuid); 
+        setSaveMessage('Snippet saved successfully!'); 
 
-        // Delay clearing the form and fetching new snippets
+       
         setTimeout(() => {
           setCurrentSnippet('');
           setRealmData([]);
           setSnippets([]);
           fetchRecentSnippets(); 
-        }, 13000);
+        }, 5000);
 
       } catch (error) {
         console.error('Error saving snippet:', error);
         setSaveMessage('Error saving snippet. Please try again.');
       } finally {
         setIsSaving(false); // Hide loader
-        setTimeout(() => setSaveMessage(''), 2000); // Clear message after 2 seconds
+        setTimeout(() => setSaveMessage(''), 3000); // Clear message after 2 seconds
       }
     }
   };
 
-  // Handle search submission
+  
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setIsSearching(true);
-    setCurrentPage(1); // Reset to page 1 on new search
-    searchSnippets(1); // Fetch first page of search results
+    setCurrentPage(1);
+    searchSnippets(1); 
   };
-
+  function adjustHeight(event) {
+    const textarea = event.target;
+    textarea.style.height = 'auto'; // Reset the height to recalculate
+    textarea.style.height = textarea.scrollHeight + 'px'; // Set height based on the content
+  }
   const handlePageChange = (page) => {
     setCurrentPage(page);
     if (isSearching) {
-      searchSnippets(page); // Navigate through search results
+      searchSnippets(page); 
     } else {
-      fetchRecentSnippets(page); // Navigate through recent snippets
+      fetchRecentSnippets(page);
     }
   };
   
@@ -123,16 +135,22 @@ export default function Snippets() {
         <h1>Mind Snippets</h1>
       </div>
       <textarea
-        className={styles.textarea}
-        value={currentSnippet}
-        onChange={(e) => setCurrentSnippet(e.target.value)}
-        onBlur={handleSnippetBlur}
-        placeholder="Start typing your snippet..."
-        rows="5"
-      />
-      {isSaving && <div className={styles.saving}>Saving...</div>}
+  className={styles.textarea}
+  value={currentSnippet}
+  onChange={(e) => {
+    setCurrentSnippet(e.target.value);
+    adjustHeight(e); // Adjust the height dynamically
+  }}
+  onBlur={handleSnippetBlur}
+  placeholder="Start typing your snippet..."
+  rows="5"
+/>
 
-      {/* Sleek silver search bar */}
+
+  
+
+      {saveMessage && <div className={styles.saving}>{saveMessage}</div>}
+
       <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
   <div className={styles.searchContainer}>
     <input
@@ -145,8 +163,8 @@ export default function Snippets() {
     <button type="submit" className={styles.searchIcon}>
       <LuSearch />
     </button>
-    {isSearching && <CircleLoader color="#FFD700" size={25} className={styles.loader} />}
   </div>
+  {isSearching && <CircleLoader color="#FFD700" size={25} className={styles.loader} />}
 </form>
 
       {/* Snippet List */}
@@ -200,11 +218,11 @@ export default function Snippets() {
             <div className={styles.createdAt}>
               Created At: {new Date(snippet.createdAt +'z').toLocaleString('en-US', {
   day: 'numeric',
-  month: 'short', // Change to 'long' for full month names
+  month: 'short', 
   year: 'numeric',
   hour: 'numeric',
   minute: 'numeric',
-  hour12: true,  // Use false for 24-hour format
+  hour12: true,  
 })
 }
             </div>

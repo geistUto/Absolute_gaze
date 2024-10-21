@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import styles from '../../styles/Snippets.module.css';
-import { MdOutlineAutoGraph } from "react-icons/md"; 
+import { MdOutlineAutoGraph } from "react-icons/md";
+import { FadeLoader } from 'react-spinners'; 
 
 export default function RealmSnippets() {
   const router = useRouter();
@@ -37,7 +38,9 @@ export default function RealmSnippets() {
   }, [realmId]);
 
   if (loading) {
-    return <p className={styles.loading}>Loading snippets...</p>;
+    return (<div className={styles.loaderCenter}>
+    <FadeLoader color="#FFD700" size={25} />
+  </div>);
   }
 
   return (
