@@ -75,7 +75,12 @@
   max-width: 100%;
   box-sizing: border-box;
 }
-
+.loaderHorizontal {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh; 
+  margin-top: 1rem;
+}
 .loader{
   margin: 0.5rem; 
 }
